@@ -22,32 +22,40 @@ def get_args():
 	return INFILE, BLASTX
 INFILE, BLASTX = get_args()
 
-ID_LIST = []
-LENLIST = []
-IDLIST = []
+ID_LIS = []
+LEN_LIS = []
+IDLIS = []
 
 with open('stats.txt', 'w') as STATS: 
 
 	for RECORD in SeqIO.parse(INFILE, 'fasta'):
-			LENLIST.append(len(RECORD.seq))
-	#this calculates the total basepairs in length
-	print('length = ' + str(sum(LENLIST)) + '.')
-	STATS.write('full lengths = ' + str(sum(LENLIST)) + '.\n')
+			LEN_LIS.append(len(RECORD.seq))
+	#this calculates the total basepairs length
+	print('length = ' + str(sum(LEN_LIS)) + '.')
+	STATS.write('full lengths = ' + str(sum(LEN_LIS)) + '.\n')
 	
 	#this calculates the leght of the transcript 
-	print ('transcripts = ' + str(len(LENLIST)) + '.')
-	STATS.write('transcripts = ' + str(len(LENLIST)) + '.\n')
+	print ('transcripts = ' + str(len(LEN_LIS)) + '.')
+	STATS.write('transcripts = ' + str(len(LEN_LIS)) + '.\n')
 	
 	#this calculates the mean of the length of the transcript
-	print('mean transcripts length = ' + str(stat.mean(LENLIST)) + '.')
-	STATS.write('mean transcritps length = ' + str(stat.mean(LENLIST)) + '.\n')
+	print('mean transcripts length = ' + str(stat.mean(LEN_LIS)) + '.')
+	STATS.write('mean transcritps length = ' + str(stat.mean(LEN_LIS)) + '.\n')
 	
-	#this calculates the N50, this is the mean or median of legths
-	print('N50 of transcripts = ' + str(stat.median(LENLIST)) + '.\n')
-	
+	#this calculates the N50, this is the mean or median of lengths
+	LENLIS = sorted(LEN_LIS)
+	HALF = sum(LEN_LIS)/2
+	TOTALENTRIES = len(LEN_LIS)
+	for ENTRY in range(1, TOTALENTRIES):
+		RUNNINGTOTAL = sum(LEN_LIS[0:ENTRY])
+		if RUNNINGTOTAL >= HALF:
+			print('N50 = ' + str(LEN_LIS[ENTRY-1]) + '.')
+			STATS.write('N50 = ' + str(LEN_LIS[ENTRY-1]) + '.\n')
+			break
 	for RECORD in SeqIO.parse(INFILE, 'fasta'):
-		IDLIST.append(RECORD.id.rsplit('_',1))
-		
-IDS = pd.DataFrame(IDLIST, columns = ['uni', 'iso'])
-COUNTUNI = len(IDS['uni'].unique())
-print('we have ' + str(COUNTUNI) + ' unigenes in the file.')
+		ID_LIS.append(RECORD.id.rsplit('_',1))
+
+	IDS = pd.DataFrame(ID_LIS, columns = ['uni', 'iso'])
+	COUNTUNI = len(IDS['uni'].unique())
+	print('There are ' + str(COUNTUNI) + ' unigenes in the file.')
+	STATS.write('There are ' + str(COUNTUNI) + ' unigenes in the file.\n')
