@@ -68,7 +68,7 @@ with open('stats.txt', 'w') as STATS:
 ##PART TWO OF THE HW. THE IDEA HERE IS TO COUNT THE SEQS THAT HAVE HITS IN THE BLAST
 ###
 	#reading the file as a table and use the columns to count the hits
-	TRANSCRIPT_HITS = pd.read_table(BLASTX, sep='\t', usecols=[1,2], names=['ID', 'db'])
+	TRANSCRIPT_HITS = pd.read_table(BLASTX, sep='\t', usecols=[1,2], names=['I.D', 'unique'])
 	HITS = len(TRANSCRIPT_HITS.ID.unique())
 	print('UNIQUE HITS = ' + str(HITS) + '.')
 	
